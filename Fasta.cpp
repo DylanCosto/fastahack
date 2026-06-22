@@ -56,6 +56,10 @@ void FastaIndex::readIndexFile(string fname) {
                 // note that fields[0] is the sequence name
                 char* end;
                 string name = split(fields[0], " \t").at(0);  // key by first token of name
+                if (this->count(name)) {
+                    cerr << "Sequence \"" << name << "\" appears multiple times" << endl;
+                    exit(1);
+                }
                 sequenceNames.push_back(name);
                 this->insert(make_pair(name, FastaIndexEntry(fields[0], atoi(fields[1].c_str()),
                                                     strtoll(fields[2].c_str(), &end, 10),
