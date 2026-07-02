@@ -55,16 +55,10 @@ void FastaIndex::readIndexFile(string fname) {
             if (fields.size() == 5) {  // if we don't get enough fields then there is a problem with the file
                 // note that fields[0] is the sequence name
                 char* end;
-                string name = split(fields[0], " \t").at(0);  // key by first token of name
-                if (this->count(name)) {
-                    cerr << "Sequence \"" << name << "\" appears multiple times" << endl;
-                    exit(1);
-                }
-                sequenceNames.push_back(name);
-                this->insert(make_pair(name, FastaIndexEntry(fields[0], atoi(fields[1].c_str()),
-                                                    strtoll(fields[2].c_str(), &end, 10),
-                                                    atoi(fields[3].c_str()),
-                                                    atoi(fields[4].c_str()))));
+                flushEntryToIndex(FastaIndexEntry(fields[0], atoi(fields[1].c_str()),
+                                                  strtoll(fields[2].c_str(), &end, 10),
+                                                  atoi(fields[3].c_str()),
+                                                  atoi(fields[4].c_str())));
             } else {
                 cerr << "Warning: malformed fasta index file " << fname << 
                     "does not have enough fields @ line " << linenum << endl;
@@ -209,6 +203,10 @@ void FastaIndex::indexReference(string refname) {
 
 void FastaIndex::flushEntryToIndex(FastaIndexEntry& entry) {
     string name = split(entry.name, " \t").at(0);  // key by first token of name
+    if (this->count(name)) {
+        cerr << "Sequence \"" << name << "\" appears multiple times" << endl;
+        exit(1);
+    }
     sequenceNames.push_back(name);
     this->insert(make_pair(name, FastaIndexEntry(entry.name, entry.length,
                         entry.offset, entry.line_blen,
