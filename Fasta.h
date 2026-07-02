@@ -3,7 +3,7 @@
 // Marth Lab, Department of Biology, Boston College
 // All rights reserved.
 // ---------------------------------------------------------------------------
-// Last modified: 5 February 2010 (EG)
+// Last modified: 1 July 2026 (AMN)
 // ---------------------------------------------------------------------------
 
 #ifndef _FASTA_H
@@ -30,7 +30,8 @@ using namespace std;
 class FastaIndexEntry {
     friend ostream& operator<<(ostream& output, const FastaIndexEntry& e);
     public:
-        FastaIndexEntry(string name, int length, long long offset, int line_blen, int line_len);
+        FastaIndexEntry(const string& name, int length, long long offset, int line_blen, int line_len);
+        FastaIndexEntry(const FastaIndexEntry& other) = default;
         FastaIndexEntry(void);
         ~FastaIndexEntry(void);
         string name;  // sequence name
@@ -53,7 +54,7 @@ class FastaIndex : public map<string, FastaIndexEntry> {
         void writeIndexFile(string fname);
         ifstream indexFile;
         FastaIndexEntry entry(string key);
-        void flushEntryToIndex(FastaIndexEntry& entry);
+        void flushEntryToIndex(const FastaIndexEntry& entry);
         string indexFileExtension(void);
 };
 
