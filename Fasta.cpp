@@ -3,12 +3,12 @@
 // Marth Lab, Department of Biology, Boston College
 // All rights reserved.
 // ---------------------------------------------------------------------------
-// Last modified: 26 February 2019 (AMN)
+// Last modified: 1 July 2026 (AMN)
 // ---------------------------------------------------------------------------
 
 #include "Fasta.h"
 
-FastaIndexEntry::FastaIndexEntry(string name, int length, long long offset, int line_blen, int line_len)
+FastaIndexEntry::FastaIndexEntry(const string& name, int length, long long offset, int line_blen, int line_len)
     : name(name)
     , length(length)
     , offset(offset)
@@ -201,16 +201,14 @@ void FastaIndex::indexReference(string refname) {
     }
 }
 
-void FastaIndex::flushEntryToIndex(FastaIndexEntry& entry) {
+void FastaIndex::flushEntryToIndex(const FastaIndexEntry& entry) {
     string name = split(entry.name, " \t").at(0);  // key by first token of name
     if (this->count(name)) {
         cerr << "Sequence \"" << name << "\" appears multiple times" << endl;
         exit(1);
     }
     sequenceNames.push_back(name);
-    this->insert(make_pair(name, FastaIndexEntry(entry.name, entry.length,
-                        entry.offset, entry.line_blen,
-                        entry.line_len)));
+    this->insert(make_pair(name, entry));
 
 }
 
